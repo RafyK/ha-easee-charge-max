@@ -63,3 +63,16 @@ PHASE_MODE_LABEL = {
     PHASE_MODE_AUTO: "Auto (3-phase)",
 }
 PHASE_MODE_FROM_LABEL = {v: k for k, v in PHASE_MODE_LABEL.items()}
+
+
+# Partial mapping of Easee "reasonForNoCurrent" codes to human-readable labels.
+REASON_FOR_NO_CURRENT_LABEL: dict[int, str] = {
+    0: "No reason",
+    1: "Waiting for vehicle",
+    2: "Vehicle disconnected",
+    3: "RCD / ground fault",
+    4: "Pilot signal error",
+    5: "Charger disabled",
+    6: "Overtemperature",
+    7: "Phase loss / imbalance",
+}

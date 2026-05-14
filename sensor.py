@@ -21,7 +21,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, OP_MODE_LABEL
+from .const import DOMAIN, OP_MODE_LABEL, REASON_FOR_NO_CURRENT_LABEL
 
 
 @dataclass(frozen=True)
@@ -46,6 +46,17 @@ def _op_mode(data: dict) -> str | None:
 def _power_w(data: dict) -> float | None:
     kw = data.get("state", {}).get("totalPower")
     return round(kw * 1000, 1) if kw is not None else None
+
+
+def _reason_for_no_current(data: dict) -> str | None:
+    val = data.get("state", {}).get("reasonForNoCurrent")
+    if val is None:
+        return None
+    try:
+        code = int(val)
+    except (TypeError, ValueError):
+        return str(val)
+    return REASON_FOR_NO_CURRENT_LABEL.get(code, f"Code {code}")
 
 
 SENSORS: tuple[EaseeSensorDescription, ...] = (
@@ -154,7 +165,7 @@ SENSORS: tuple[EaseeSensorDescription, ...] = (
         key="reason_no_current",
         name="Reason for No Current",
         icon="mdi:alert-circle-outline",
-        value_fn=_state("reasonForNoCurrent"),
+        value_fn=_reason_for_no_current,
     ),
     EaseeSensorDescription(
         key="online",
